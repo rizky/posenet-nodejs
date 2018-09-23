@@ -1,0 +1,14 @@
+{
+  "name": "posenet-nodejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow-models/posenet": "^0.2.3",
+    "@tensorflow/tfjs": "^0.13.0",
+    "@tensorflow/tfjs-node": "^0.1.17",
+    "canvas": "^2.0.0-alpha.14",
+    "node-fetch": "^2.2.0",
+    "xhr2": "^0.1.4"
+  }
+}
