@@ -18,12 +18,14 @@ const drawKeypoints = (canvas, keypoints) => {
     ctx.stroke();
   });
   const buf = canvas.toBuffer();
-  fs.writeFileSync('test.png', buf);
+  fs.writeFileSync('./images/result.png', buf);
 }
 
 const run = async () => {
-  let img_path = 'https://d2z0k43lzfi12d.cloudfront.net/blog/vcdn231/wp-content/uploads/2017/06/15.06._Running-Stamina-1.jpg';
-  let buffer = await fetch(img_path).then(res => res.buffer());
+  let img_path = '/Users/rizkyario/Desktop/posenet-nodejs/images/dance.png';
+  let { Response } = fetch;
+  let stream = fs.createReadStream(img_path);
+  let buffer = await new Response(stream).buffer()
   let img = new Image();
   img.src = buffer;
   const canvas = createCanvas(img.width,img.height);
