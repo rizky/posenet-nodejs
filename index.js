@@ -9,7 +9,7 @@ const posenet = require('@tensorflow-models/posenet')
 const videoProcessor = require('./video_processor')
 fs = require('fs');
 
-const drawKeypoints = (name, canvas, keypoints) => {
+const drawKeypoints = (name, index, canvas, keypoints) => {
   ctx = canvas.getContext('2d');
   keypoints.forEach((key, index) => {
     if (index > 4 && index < 11) {
@@ -22,11 +22,11 @@ const drawKeypoints = (name, canvas, keypoints) => {
     }
   });
   const buf = canvas.toBuffer();
-  fs.writeFileSync(`./images/${name}/${name}-result.jpg`, buf);
+  fs.writeFileSync(`./images/${name}/r${name}_${index}.jpg`, buf);
 }
 
-const run = async (name) => {
-  let img_path = `./images/${name}/${name}_2.png`;
+const run = async (name, index) => {
+  let img_path = `./images/${name}/${name}_${index}.png`;
   let { Response } = fetch;
   let stream = fs.createReadStream(img_path);
   let buffer = await new Response(stream).buffer()
@@ -35,16 +35,22 @@ const run = async (name) => {
   const canvas = createCanvas(img.width,img.height);
   canvas.getContext('2d').drawImage(img, 0, 0);
 
-  const imageScaleFactor = 0.5;
+  const imageScaleFactor = 1;
   const flipHorizontal = false;
   const outputStride = 8;
-  const multiplier = 0.5;
+  const multiplier = 1.01;
 
   const net  = await posenet.load(multiplier);
   const pose = await net.estimateSinglePose(canvas, imageScaleFactor, flipHorizontal, outputStride);
-  drawKeypoints(name, canvas, pose.keypoints);
+  drawKeypoints(name, index, canvas, pose.keypoints);
   return pose;
 }
 
-videoProcessor.generateImages('1_dollar');
-run('1_dollar');
+const main = async () => {
+  const length =  10;
+  await videoProcessor.generateImages('1_dollar', length);
+  [...Array(length)].map((i, index) =>
+    run('1_dollar', index + 1));
+}
+
+main();

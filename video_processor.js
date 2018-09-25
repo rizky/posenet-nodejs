@@ -1,11 +1,16 @@
 var fs = require('fs');
 var ffmpeg = require('fluent-ffmpeg');
 
-const generateImages = (name) => {
-  const command = ffmpeg(`./videos/${name}.mp4`);
+const generateProcentage = (number) => [...Array(number)]
+  .map((i, index) => `${index * (100 / number) + ( 100 / number / 2 )}%`);
+
+const generateImages = async (name, length) => {
+  console.log(generateProcentage(length));
+  
+  const command = await ffmpeg(`./videos/${name}.mp4`);
   if (!fs.existsSync(name)) { fs.mkdirSync(name); }
-  command.screenshots({
-    timestamps: ['20%', '40%', '60%', '80%'],
+  await command.screenshots({
+    timestamps: generateProcentage(length),
     filename: `${name}.png`,
     folder: `./images/${name}`,
     size: '320x240',
