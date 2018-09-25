@@ -5,12 +5,11 @@ const generateProcentage = (number) => [...Array(number)]
   .map((i, index) => `${index * (100 / number) + ( 100 / number / 2 )}%`);
 
 const generateImages = async (name, length) => {  
-  if (!fs.existsSync(name)) { fs.mkdirSync(name); }
   return new Promise((resolve, reject) => {
     ffmpeg(`./videos/${name}.mp4`)
       .screenshots({
         timestamps: generateProcentage(length),
-        filename: `${name}.png`,
+        filename: `${name}_%0i.png`,
         folder: `./images/${name}`,
         size: '320x240',
       })

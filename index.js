@@ -9,6 +9,8 @@ const posenet = require('@tensorflow-models/posenet')
 const videoProcessor = require('./video_processor')
 fs = require('fs');
 
+const formatIndex = (index) => index.toString().padStart(2, '0');
+
 const drawKeypoints = (name, index, canvas, keypoints) => {
   ctx = canvas.getContext('2d');
   keypoints.forEach((key, index) => {
@@ -22,11 +24,12 @@ const drawKeypoints = (name, index, canvas, keypoints) => {
     }
   });
   const buf = canvas.toBuffer();
-  fs.writeFileSync(`./images/${name}/r${name}_${index}.jpg`, buf);
+  fs.writeFileSync(`./images/${name}/r${name}_${formatIndex(index)}.jpg`, buf);
+  fs.writeFileSync(`./images/${name}/d${name}_${formatIndex(index)}.json`, JSON.stringify(keypoints) , 'utf-8');
 }
 
 const run = async (name, index) => {
-  let img_path = `./images/${name}/${name}_${index}.png`;
+  let img_path = `./images/${name}/${name}_${formatIndex(index)}.png`;
   let { Response } = fetch;
   let stream = fs.createReadStream(img_path);
   let buffer = await new Response(stream).buffer()
@@ -43,11 +46,10 @@ const run = async (name, index) => {
   const net  = await posenet.load(multiplier);
   const pose = await net.estimateSinglePose(canvas, imageScaleFactor, flipHorizontal, outputStride);
   drawKeypoints(name, index, canvas, pose.keypoints);
-  return pose;
 }
 
 const main = async () => {
-  const length =  5;
+  const length =  10;
   await videoProcessor.generateImages('1_dollar', length);
   [...Array(length)].map(async (i, index) =>
     run('1_dollar', index + 1));
