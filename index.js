@@ -28,7 +28,8 @@ const drawKeypoints = (name, index, canvas, keypoints) => {
   fs.writeFileSync(`./images/${name}/d${name}_${formatIndex(index)}.json`, JSON.stringify(keypoints) , 'utf-8');
 }
 
-const run = async (name, index) => {
+const run = async (net, name, index) => {
+  console.log(index);
   let img_path = `./images/${name}/${name}_${formatIndex(index)}.png`;
   let { Response } = fetch;
   let stream = fs.createReadStream(img_path);
@@ -41,18 +42,25 @@ const run = async (name, index) => {
   const imageScaleFactor = 1;
   const flipHorizontal = false;
   const outputStride = 8;
-  const multiplier = 1.01;
-
-  const net  = await posenet.load(multiplier);
   const pose = await net.estimateSinglePose(canvas, imageScaleFactor, flipHorizontal, outputStride);
   drawKeypoints(name, index, canvas, pose.keypoints);
 }
 
 const main = async () => {
-  const length =  10;
-  await videoProcessor.generateImages('1_dollar', length);
-  [...Array(length)].map(async (i, index) =>
-    run('1_dollar', index + 1));
+  try {
+    const length =  20;
+    const multiplier = 1.01;
+  
+    await videoProcessor.generateImages('1_dollar', length);
+    const net = await posenet.load(multiplier);
+    let index = 0
+    while (index < length) {
+      await run(net, '1_dollar', index + 1);
+      index++;
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 main();
