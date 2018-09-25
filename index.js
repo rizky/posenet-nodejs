@@ -47,9 +47,9 @@ const run = async (name, index) => {
 }
 
 const main = async () => {
-  const length =  10;
+  const length =  5;
   await videoProcessor.generateImages('1_dollar', length);
-  [...Array(length)].map((i, index) =>
+  [...Array(length)].map(async (i, index) =>
     run('1_dollar', index + 1));
 }
 

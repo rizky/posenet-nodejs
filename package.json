@@ -11,5 +11,8 @@
     "fluent-ffmpeg": "^2.1.2",
     "node-fetch": "^2.2.0",
     "xhr2": "^0.1.4"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }
