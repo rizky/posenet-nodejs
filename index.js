@@ -15,7 +15,6 @@ const drawKeypoints = (name, index, canvas, keypoints) => {
   ctx = canvas.getContext('2d');
   keypoints.forEach((key, index) => {
     if (index > 4 && index < 11) {
-      console.log(key);
       ctx.beginPath();
       ctx.arc(key.position.x, key.position.y, 5, 0, 2 * Math.PI, false);
       ctx.lineWidth = 3;
@@ -26,6 +25,7 @@ const drawKeypoints = (name, index, canvas, keypoints) => {
   const buf = canvas.toBuffer();
   fs.writeFileSync(`./images/${name}/r${name}_${formatIndex(index)}.jpg`, buf);
   fs.writeFileSync(`./images/${name}/d${name}_${formatIndex(index)}.json`, JSON.stringify(keypoints) , 'utf-8');
+  console.log(`./images/${name}/d${name}_${formatIndex(index)}.json`);
 }
 
 const run = async (net, name, index) => {
@@ -50,12 +50,13 @@ const main = async () => {
   try {
     const length =  20;
     const multiplier = 1.01;
+    const filename = '5_dollars';
   
-    await videoProcessor.generateImages('1_dollar', length);
+    await videoProcessor.generateImages(filename, length);
     const net = await posenet.load(multiplier);
     let index = 0
     while (index < length) {
-      await run(net, '1_dollar', index + 1);
+      await run(net, filename, index + 1);
       index++;
     }
   } catch (err) {
