@@ -45,12 +45,11 @@ const run = async (net, name, index) => {
   drawKeypoints(name, index, canvas, pose.keypoints);
 }
 
-const main = async () => {
+const processFile = async (filename) => {
   try {
     const length =  20;
     const multiplier = 1.01;
-    const filename = '5_dollars';
-  
+
     await videoProcessor.generateImages(filename, length);
     const net = await posenet.load(multiplier);
     let index = 0
@@ -63,4 +62,10 @@ const main = async () => {
   }
 }
 
-main();
+fs.readdir('./videos', (err, dir) => {
+  const filenames = dir.map((filename) => filename.split('.')[0])
+  console.log(filenames);
+  const res = filenames.map((filename) => processFile(filename));
+
+  Promise.all(res);
+});

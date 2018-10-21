@@ -56,12 +56,23 @@ const findMostSimilarMatch = (userPose) => {
 
 const main = async () => {
   try {
-    const input = loadPoseData(['8_hour'], 20);
-    const poseData = loadPoseData(['5_dollars', '1_dollar'], 20);
+    const input = loadPoseData(['young'], 20);
+    const poseData = loadPoseData([ '1_dollar',
+    '5_dollars',
+    'wrong_1',
+    'wrong_2',
+    'yeah',
+    'year',
+    'yellow',
+    'yesterday',
+    'zero',
+    'zipper',
+    'zoom_in',
+    'zoom_off' ], 20);
     // Build the tree once
     buildVPTree(poseData);
 
-    const currentUserPose = input[19] // an L2 normalized vector representing a user pose. 34-float array (17 keypoints x 2).  
+    const currentUserPose = input[10] // an L2 normalized vector representing a user pose. 34-float array (17 keypoints x 2).  
     console.log(`./images/${currentUserPose.name}/r${currentUserPose.name}_${utils.formatIndex(currentUserPose.index + 1)}.jpg`);
     const closestMatchIndex = findMostSimilarMatch(currentUserPose.positions);
     const closestMatch = poseData[closestMatchIndex];
