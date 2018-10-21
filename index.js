@@ -1,15 +1,14 @@
 global.XMLHttpRequest = require('xhr2');
 
+const {Image, createCanvas} = require('canvas');
+const fetch = require('node-fetch');
+const fs = require('fs');
+const posenet = require('@tensorflow-models/posenet')
 const tf = require('@tensorflow/tfjs');
 require('@tensorflow/tfjs-node');
 
-const fetch = require('node-fetch');
-const {Image, createCanvas} = require('canvas');
-const posenet = require('@tensorflow-models/posenet')
+const utils = require('./utils.js')
 const videoProcessor = require('./video_processor')
-fs = require('fs');
-
-const formatIndex = (index) => index.toString().padStart(2, '0');
 
 const drawKeypoints = (name, index, canvas, keypoints) => {
   ctx = canvas.getContext('2d');
@@ -23,14 +22,14 @@ const drawKeypoints = (name, index, canvas, keypoints) => {
     }
   });
   const buf = canvas.toBuffer();
-  fs.writeFileSync(`./images/${name}/r${name}_${formatIndex(index)}.jpg`, buf);
-  fs.writeFileSync(`./images/${name}/d${name}_${formatIndex(index)}.json`, JSON.stringify(keypoints) , 'utf-8');
-  console.log(`./images/${name}/d${name}_${formatIndex(index)}.json`);
+  fs.writeFileSync(`./images/${name}/r${name}_${utils.formatIndex(index)}.jpg`, buf);
+  fs.writeFileSync(`./images/${name}/d${name}_${utils.formatIndex(index)}.json`, JSON.stringify(keypoints) , 'utf-8');
+  console.log(`./images/${name}/d${name}_${utils.formatIndex(index)}.json`);
 }
 
 const run = async (net, name, index) => {
   console.log(index);
-  let img_path = `./images/${name}/${name}_${formatIndex(index)}.png`;
+  let img_path = `./images/${name}/${name}_${utils.formatIndex(index)}.png`;
   let { Response } = fetch;
   let stream = fs.createReadStream(img_path);
   let buffer = await new Response(stream).buffer()
